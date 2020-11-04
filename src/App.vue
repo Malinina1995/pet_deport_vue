@@ -1,22 +1,36 @@
 <template>
     <div id="app">
-        <router-view></router-view>
+        <transition name="fade" mode="out-in">
+            <router-view></router-view>
+        </transition>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'app'
+    name: 'app',
 }
 </script>
 
 <style>
 /*@import "./assets/css/main.css";*/
 
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s ease-out;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
 .content {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+img {
+    width: 200px;
+    height: 200px;
 }
 
 .pr_10 {
@@ -47,7 +61,7 @@ export default {
     display: inline;
     margin-left: 10px;
     margin-top: 10px;
-    float:right;
+    float: right;
 }
 
 .rating > span {
