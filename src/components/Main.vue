@@ -44,7 +44,7 @@
 
 <script>
 import MyHeader from './Header'
-import axios from "axios";
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: "iMain",
@@ -53,17 +53,13 @@ export default {
     },
     data() {
         return {
-            products: {},
             cart: [],
         }
     },
-    created() {
-        axios.get('/products.json')
-            .then(res => {
-                this.products = res.data.products;
-            })
-    },
     computed: {
+        ...mapGetters([
+            'products'
+        ]),
         cartItemCount() {
             return this.cart.length || 0;
         },
@@ -74,6 +70,9 @@ export default {
             }
             return []
         }
+    },
+    created() {
+        this.initStore()
     },
     filters: {
         formatPrice(price) {
@@ -95,6 +94,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions([
+            'initStore'
+        ]),
         addToCart(product) {
             this.cart.push(product.id)
         },
