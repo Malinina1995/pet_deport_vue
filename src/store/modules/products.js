@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-    products: {}
+    products: {},
+    session: false
 }
 
 const actions = {
@@ -10,17 +11,22 @@ const actions = {
             .then(res => {
                 commit('SET_STORE', res.data.products)
             })
-    }
+    },
+
 }
 
 const mutations = {
     'SET_STORE'(state, products) {
         state.products = products
+    },
+    'SET_SESSION'(state, session) {
+        state.session = session
     }
 }
 
 const getters = {
-    products: state => state.products
+    products: state => state.products,
+    session: state => state.session
 }
 
 export default {

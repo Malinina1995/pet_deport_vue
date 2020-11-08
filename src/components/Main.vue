@@ -44,7 +44,8 @@
 
 <script>
 import MyHeader from './Header'
-import { mapGetters, mapActions } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
+import {productsRef} from "@/firebase";
 
 export default {
     name: "iMain",
@@ -54,25 +55,26 @@ export default {
     data() {
         return {
             cart: [],
+            products: []
         }
+    },
+    firebase: {
+        products: productsRef
     },
     computed: {
         ...mapGetters([
-            'products'
+            'session'
         ]),
         cartItemCount() {
             return this.cart.length || 0;
         },
         sortedProducts() {
-            if (this.products.length) {
+            if (this.products?.length) {
                 let productsArray = this.products.slice(0);
                 return productsArray.sort(this.compare)
             }
             return []
         }
-    },
-    created() {
-        this.initStore()
     },
     filters: {
         formatPrice(price) {

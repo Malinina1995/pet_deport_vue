@@ -1,35 +1,93 @@
 <template>
-    <header
-        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-        <h1 class="my-0 mr-md-auto font-weight-normal">
-            <router-link :to="{name: 'iMain'}">{{ sitename }}</router-link>
-        </h1>
-        <div @click="showCheckout" class="btn btn-outline-primary"><i
-            class="fas fa-shopping-cart icon_mr-10"></i><span class="pr_10">{{ cartItemCount }}</span>Checkout
+    <header>
+        <div class="navbar navbar-default">
+            <div class="navbar-header">
+                <h1><router-link :to="{name: 'iMain'}">{{ sitename }}</router-link></h1>
+            </div>
+            <div class="nav navbar-nav navbar-right cart">
+                <div v-if="!session">
+                    <button type="button" class="btn btn-default btn-lg" v-on:click="signIn">
+                        Sign In
+                    </button>
+                </div>
+                <div v-else>
+                    <button type="button" class="btn btn-default btn-lg" v-on:click="signOut">
+                        <img class="photo" :src="session.photoURL" />
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+            <div class="nav navbar-nav navbar-right cart">
+                <router-link active-class="active" tag="button" class="btn btn-default btn-lg" :to="{name: 'Form'}">
+                    <span class="glyphicon glyphicon-shopping-cart">{{ cartItemCount}}</span> Checkout
+                </router-link>
+            </div>
         </div>
-
     </header>
 </template>
 
 <script>
+import firebase from 'firebase';
+import {mapGetters, mapMutations} from 'vuex'
+
 export default {
-    name: "my-header",
-    data() {
+    name: 'Header',
+    data () {
         return {
-            sitename: 'Pet Depot',
+            sitename: "Vue.js Pet Depot"
         }
     },
-    props: [
-        'cartItemCount'
-    ],
+    props: ['cartItemCount'],
+    beforeCreate() {
+        firebase.auth().onAuthStateChanged((user)=> {
+            this.SET_SESSION(user || false)
+        });
+    },
     methods: {
+        ...mapMutations([
+            'SET_SESSION'
+        ]),
         showCheckout() {
-            this.$router.push({name: 'Form'})
+            this.$router.push({name: 'Form'});
+        },
+        signIn() {
+            let provider = new firebase.auth.GoogleAuthProvider();
+            // eslint-disable-next-line no-unused-vars
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+                console.log('signed in!');
+            }).catch(function(error){
+                console.log('error ' + error)
+            });
+        },
+        signOut() {
+            firebase.auth().signOut().then(function() {
+                // Sign-out successful.
+                console.log("signed out!")
+            }).catch(function(error) {
+                console.log(error)
+                // An error happened.
+            });
         }
+    },
+    computed: {
+        ...mapGetters([
+            'session'
+        ])
     }
 }
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+a {
+    text-decoration: none;
+    color: black;
+}
+.photo {
+    width: 25px;
+    height: 25px;
+}
+.router-link-exact-active {
+    color: black;
+}
 </style>
